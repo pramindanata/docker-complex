@@ -4,7 +4,7 @@ services:
 before_install:
   - docker build -t complex/client -f ./client/Dockerfile.dev ./client
 script:
-  - docker run complex/client npm run test -- --coverage
+  - docker run -e CI=true complex/client npm run test -- --coverage
 after_success:
   - docker build -t pramindanata/complex-client ./client
   - docker build -t pramindanata/complex-server ./server
