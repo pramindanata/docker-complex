@@ -8,11 +8,13 @@ services:
       dockerfile: Dockerfile.dev
       context: ./nginx
   db:
-    image: postgres:latest
+    image: postgres:11
     environment: 
       - POSTGRES_DB=fibonacci
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=es_segar
+    ports:
+      - 5555:5432
   redis:
     image: redis:latest
   api:

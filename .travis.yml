@@ -1,0 +1,19 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t complex/client -f ./client/Dockerfile.dev ./client
+script:
+  - docker run complex/client npm run test -- --coverage
+after_success:
+  - docker build -t pramindanata/complex-client ./client
+  - docker build -t pramindanata/complex-server ./server
+  - docker build -t pramindanata/complex-worker ./worker
+  - docker build -t pramindanata/complex-nginx ./nginx
+  # Login to Docker Hub
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to Docker Hub
+  - docker push pramindanata/complex-client
+  - docker push pramindanata/complex-server
+  - docker push pramindanata/complex-worker
+  - docker push pramindanata/complex-nginx
