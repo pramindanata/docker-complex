@@ -1,5 +1,5 @@
 # Setup SSH
-openssl aes-256-cbc -K $encrypted_eb755bb90e03_key -iv $encrypted_eb755bb90e03_iv -in deploy_key.enc -out deploy_key -d
+openssl aes-256-cbc -K $encrypted_326343ebfff0_key -iv $encrypted_326343ebfff0_iv -in deploy_key.enc -out deploy_key -d
 eval "$(ssh-agent -s)"
 chmod 600 ./deploy_key
 echo -e "Host $SERVER_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
