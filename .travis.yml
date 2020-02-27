@@ -29,6 +29,6 @@ deploy:
   on:
     branch: master
   provider: script
-  script: rsync -rav  --exclude-from='rsync-exclude.txt' --delete ./ travis@$SERVER_IP:$APP_PATH
+  script: rsync -rav --exclude-from='rsync-exclude.txt' --delete ./ travis@$SERVER_IP:$APP_PATH
 after_deploy:
   - ssh -i ./deploy_key travis@$SERVER_IP "cd $APP_PATH && bash install.sh"
