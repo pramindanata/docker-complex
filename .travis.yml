@@ -19,8 +19,16 @@ after_success:
   - docker push pramindanata/complex-server
   - docker push pramindanata/complex-worker
   - docker push pramindanata/complex-nginx
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_326343ebfff0_key -iv $encrypted_326343ebfff0_iv -in deploy_key.enc -out deploy_key -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 ./deploy_key
+  - echo -e "Host $SERVER_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  - ssh-add ./deploy_key
 deploy:
-  provider: script
-  script: bash deploy.sh
   on:
     branch: master
+  provider: script
+  script: rsync -rav  --exclude-from='rsync-exclude.txt' --delete ./ travis@$SERVER_IP:$APP_PATH
+after_deploy:
+  - ssh -i ./deploy_key travis@$SERVER_IP "cd $APP_PATH && bash install.sh"
