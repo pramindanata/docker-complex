@@ -20,8 +20,6 @@ services:
       - complex
     volumes:
       - complex:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
     environment: 
       - "POSTGRES_DB=${DB_NAME}"
       - "POSTGRES_USER=${DB_USER}"
@@ -38,8 +36,6 @@ services:
     image: "${IMAGE_SERVER_APP}"
     networks:
       - complex
-    ports:
-      - 4000:4000
     depends_on: 
       - db
       - redis
@@ -59,8 +55,6 @@ services:
     image: "${IMAGE_CLIENT_APP}"
     networks:
       - complex
-    ports:
-      - 3000:3000
 
   worker:
     container_name: worker
