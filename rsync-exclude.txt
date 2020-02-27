@@ -1,0 +1,8 @@
+.git
+.travis.yml
+docker-compose.dev.yml
+client
+nginx
+server
+worker
+deploy_key.enc
