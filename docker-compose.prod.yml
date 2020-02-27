@@ -9,6 +9,9 @@ services:
     restart: always
     ports:
       - 8080:80
+    depends_on: 
+      - api
+      - client
 
   db:
     container_name: db
@@ -30,15 +33,14 @@ services:
     networks:
       - complex
 
-  server:
-    container_name: server-app
+  api:
+    container_name: api
     image: "${IMAGE_SERVER_APP}"
     networks:
       - complex
     ports:
       - 4000:4000
     depends_on: 
-      - web_server
       - db
       - redis
       - worker
@@ -52,22 +54,22 @@ services:
       - "PG_PASSWORD=${DB_PASSWORD}"
       - "PG_DB=${DB_NAME}"
 
-    client:
-      container_name: client-app
-      image: "${IMAGE_CLIENT_APP}"
-      networks:
-        - complex
-      ports:
-        - 3000:3000
+  client:
+    container_name: client-app
+    image: "${IMAGE_CLIENT_APP}"
+    networks:
+      - complex
+    ports:
+      - 3000:3000
 
-    worker:
-      container_name: worker
-      image: "${IMAGE_WORKER}"
-      networks:
-        - complex
-      environment: 
-        - REDIS_HOST=redis
-        - REDIS_PORT=6379
+  worker:
+    container_name: worker
+    image: "${IMAGE_WORKER}"
+    networks:
+      - complex
+    environment: 
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
 networks:
   complex:

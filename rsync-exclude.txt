@@ -1,5 +1,6 @@
 .git
 .travis.yml
+.env.example
 docker-compose.dev.yml
 client
 nginx
