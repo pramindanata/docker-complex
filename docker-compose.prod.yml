@@ -1,0 +1,78 @@
+version: '3'
+
+services:
+  web_server:
+    container_name: web-server
+    image: "${IMAGE_WEB_SERVER}"
+    networks:
+      - complex
+    restart: always
+    ports:
+      - 8080:80
+
+  db:
+    container_name: db
+    image: "${IMAGE_DB}"
+    networks:
+      - complex
+    volumes:
+      - complex:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment: 
+      - "POSTGRES_DB=${DB_NAME}"
+      - "POSTGRES_USER=${DB_USER}"
+      - "POSTGRES_PASSWORD=${DB_PASSWORD}"
+
+  redis:
+    container_name: redis
+    image: "${IMAGE_REDIS}"
+    networks:
+      - complex
+
+  server:
+    container_name: server-app
+    image: "${IMAGE_SERVER_APP}"
+    networks:
+      - complex
+    ports:
+      - 4000:4000
+    depends_on: 
+      - web_server
+      - db
+      - redis
+      - worker
+    environment: 
+      - APP_PORT=4000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - "PG_HOST=${DB_HOST}"
+      - "PG_PORT=${DB_PORT}"
+      - "PG_USER=${DB_USER}"
+      - "PG_PASSWORD=${DB_PASSWORD}"
+      - "PG_DB=${DB_NAME}"
+
+    client:
+      container_name: client-app
+      image: "${IMAGE_CLIENT_APP}"
+      networks:
+        - complex
+      ports:
+        - 3000:3000
+
+    worker:
+      container_name: worker
+      image: "${IMAGE_WORKER}"
+      networks:
+        - complex
+      environment: 
+        - REDIS_HOST=redis
+        - REDIS_PORT=6379
+
+networks:
+  complex:
+    driver: bridge
+
+volumes:
+  complex:
+    driver: local  
